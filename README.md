@@ -87,7 +87,7 @@ Copy and paste this code at the bottom of the file. Update the **arn** with your
 aws-cli-mfa() {
   # Define profiles and ARNs here. Format: "profile_name|arn"
   local profile_data=(
-    "profile_name_1|mfa_arn_1" # Format: arn:aws:iam::XXXXXXXXXXX:mfa/device_name
+    "profile_name_1|mfa_arn_1" # Format: arn:aws:iam::123456789012:mfa/testuser
     "profile_name_2|mfa_arn_2"
     "profile_name_3|mfa_arn_1"
   )
