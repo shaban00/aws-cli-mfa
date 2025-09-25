@@ -85,10 +85,47 @@ Copy and paste this code at the bottom of the file. Update the **arn** with your
 
 ```bash
 aws-cli-mfa() {
-  if [ -n "$1" ]; then
-    local profile="$1"
-    local arn="arn:aws:iam::123456789012:mfa/testuser"
-    ~/aws-cli-mfa.sh --profile "$profile" --arn "$arn" && export AWS_PROFILE="${profile}-mfa"
+  # Define profiles and ARNs here. Format: "profile_name|arn"
+  local profile_data=(
+    "profile_name_1|mfa_arn_1" # Format: arn:aws:iam::XXXXXXXXXXX:mfa/device_name
+    "profile_name_2|mfa_arn_2"
+    "profile_name_3|mfa_arn_1"
+  )
+
+  # Function to get ARN for a given profile
+  get_arn_for_profile() {
+    local search_profile="$1"
+    for item in "${profile_data[@]}"; do
+      local profile="${item%%|*}"
+      local arn="${item##*|}"
+      if [ "$profile" = "$search_profile" ]; then
+        echo "$arn"
+        return 0
+      fi
+    done
+    echo ""
+  }
+
+  # Function to list all available profiles
+  list_profiles() {
+    for item in "${profile_data[@]}"; do
+      local profile="${item%%|*}"
+      echo "  - $profile"
+    done
+  }
+
+  local input_profile="$1"
+
+  if [ -n "$input_profile" ]; then
+    local arn=$(get_arn_for_profile "$input_profile")
+
+    if [ -n "$arn" ]; then
+      ~/aws-cli-mfa.sh --profile "$input_profile" --arn "$arn" && export AWS_PROFILE="${input_profile}-mfa"
+    else
+      echo "Error: Profile '$input_profile' not found."
+      echo "Available profiles:"
+      list_profiles
+    fi
   else
     echo "Usage: aws-cli-mfa <profile-name>"
   fi
