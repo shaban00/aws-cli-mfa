@@ -47,13 +47,13 @@ fi
 read -p "Enter MFA code for $PROFILE_NAME: " TOKEN_CODE
 
 
-# === Get session token (24hr) ===
+# === Get session token (1.5 days) ===
 CREDENTIALS=$(aws sts get-session-token \
   --serial-number "$MFA_ARN" \
   --token-code "$TOKEN_CODE" \
   --profile "$PROFILE_NAME" \
   --region "$REGION" \
-  --duration-seconds 86400 \
+  --duration-seconds 129600 \
   --output json)
 
 # === Check if the command was successful ===
